@@ -1,6 +1,6 @@
 [workspace]
 members = [
-  "example"
+  "sumcheck"
 ]
 
 # Binary size optimizations

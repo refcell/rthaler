@@ -1,0 +1,8 @@
+[package]
+name = "sumcheck"
+author = "Andreas Bigger <andreas@nascent.xyz>"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ark-poly = "0.3.0"
