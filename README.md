@@ -1,12 +1,12 @@
 <img align="right" width="150" height="150" top="100" src="./assets/readme.jpg">
 
-# stub.rs • [![tests](https://github.com/abigger87/stub.rs/actions/workflows/tests.yaml/badge.svg)](https://github.com/abigger87/stub.rs/actions/workflows/tests.yaml) [![lints](https://github.com/abigger87/stub.rs/actions/workflows/lints.yaml/badge.svg)](https://github.com/abigger87/stub.rs/actions/workflows/lints.yaml) ![GitHub](https://img.shields.io/github/license/abigger87/stub.rs)  ![Crates.io](https://img.shields.io/crates/v/stub.rs)
+# sumcheck • [![tests](https://github.com/abigger87/sumcheck/actions/workflows/tests.yaml/badge.svg)](https://github.com/abigger87/sumcheck/actions/workflows/tests.yaml) [![lints](https://github.com/abigger87/sumcheck/actions/workflows/lints.yaml/badge.svg)](https://github.com/abigger87/sumcheck/actions/workflows/lints.yaml) ![GitHub](https://img.shields.io/github/license/abigger87/sumcheck)  ![Crates.io](https://img.shields.io/crates/v/sumcheck)
 
-Modern, Extensible Template for Rust Projects.
+Implementation of the sum-check protocol following [0xsage](https://medium.com/@0xsage)'s Medium [Tutotial](https://medium.com/yearofzk/rust-guide-sum-check-protocol-18ceb8affdb2).
 
-## Getting Started
+## Usage
 
-Click `use this template` on [Github](https://github.com/abigger87/stub.rs) to create a new repository with this repo as the initial state.
+
 
 ## Blueprint
 
@@ -20,9 +20,9 @@ example
 Cargo.toml — Workspace Cargo Manifest
 ```
 
-## Development
+## Contributing
 
-TODO
+
 
 ## License
 
