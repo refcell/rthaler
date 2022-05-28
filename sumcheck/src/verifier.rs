@@ -56,28 +56,32 @@ impl Verifier {
   /// Presented pedantically:
   pub fn verify(self, claim: ScalarField) -> bool {
     // 1st round
-    let mut p = Prover::new(g);
-    let mut gi = p.gen_uni_polynomial(None);
-    let mut expected_c = gi.evaluate(&0u32.into()) + gi.evaluate(&1u32.into());
-    assert_eq!(c_1, expected_c);
-    let lookup_degree = degrees(&g);
+    // let mut p = Prover::new(g);
+    // let mut gi = p.gen_uni_polynomial(None);
+    // let mut expected_c = gi.evaluate(&0u32.into()) + gi.evaluate(&1u32.into());
+    // assert_eq!(c_1, expected_c);
+
+    // Validate Polynomial degrees
+    let lookup_degree: Vec<usize> = Verifier::degrees(&self.g);
     assert!(gi.degree() <= lookup_degree[0]);
 
-    // middle rounds
-    for j in 1..p.g.num_vars() {
-      let r = Verifier::rnd();
-      expected_c = gi.evaluate(&r.unwrap());
+    // Interactive 
+    let mut expected_claim;
+    for j in 1..self.g.num_vars() {
+      let r: Option<ScalarField> = Verifier::rnd();
+      expected_claim = gi.evaluate(&r.unwrap());
       gi = p.gen_uni_polynomial(r);
       let new_c = gi.evaluate(&0u32.into()) + gi.evaluate(&1u32.into());
-      assert_eq!(expected_c, new_c);
+      assert_eq!(expected_claim, new_c);
       assert!(gi.degree() <= lookup_degree[j]);
     }
+
     // final round
     let r = Verifier::rnd();
-    expected_c = gi.evaluate(&r.unwrap());
+    expected_claim = gi.evaluate(&r.unwrap());
     p.r_vec.push(r.unwrap());
     let new_c = p.g.evaluate(&p.r_vec);
-    assert_eq!(expected_c, new_c);
+    assert_eq!(expected_claim, new_c);
     true
   }
 
