@@ -1,10 +1,7 @@
-pub mod prover;
-pub mod verifier;
 
 
 #[cfg(test)]
 mod tests {
-
     #[test]
     fn it_works() {
         let result = 2 + 2;

@@ -1,29 +1,46 @@
-use ark_bls12_381::Fr as ScalarField;
-
+use actix::Recipient;
 use ark_ff::Field;
 use ark_poly::polynomial::multivariate::{SparsePolynomial, SparseTerm, Term};
 use ark_poly::polynomial::univariate::SparsePolynomial as UniSparsePolynomial;
 use ark_poly::polynomial::{MVPolynomial, Polynomial};
 use ark_std::cfg_into_iter;
-use rand::Rng;
+use rand::prelude::*;
+use tracing::info;
+use uuid::Uuid;
+use actix::prelude::*;
 
-use crate::common::*;
+use utils::messages::*;
+use utils::types::*;
 
 /// ## Verifier
 ///
 /// The verifier is responsible for verifing the proof of summation over the polynomial.
 #[derive(Debug, Clone)]
 pub struct Verifier {
+  /// The verifier uuid.
+  pub uuid: Uuid,
+  /// The polynomial to verify.
 	pub g: MultiPoly,
+  /// An optional prover
+  pub prover: Option<Recipient<ProofMessage<ScalarField>>>,
 }
 
 impl Verifier {
   /// Instantiates a new Verifier instance.
 	pub fn new(g: &MultiPoly) -> Self {
-		Prover {
+		Verifier {
+      uuid: Uuid::new_v4(),
 			g: g.clone(),
+      prover: None,
 		}
 	}
+
+  /// #### `set_prover`
+  ///
+  /// Sets the prover for the verifier.
+  pub fn set_prover(&self, prover: Recipient<ProofMessage<ScalarField>>) {
+    self.prover = Some(prover);
+  }
 
   /// #### `rnd` [Public Associated Function]
   ///
@@ -57,7 +74,7 @@ impl Verifier {
   pub fn verify(self, claim: ScalarField) -> bool {
     // 1st round
     // let mut p = Prover::new(g);
-    // let mut gi = p.gen_uni_polynomial(None);
+    // let mut gi = p.simulate(None);
     // let mut expected_c = gi.evaluate(&0u32.into()) + gi.evaluate(&1u32.into());
     // assert_eq!(c_1, expected_c);
 
@@ -70,7 +87,7 @@ impl Verifier {
     for j in 1..self.g.num_vars() {
       let r: Option<ScalarField> = Verifier::rnd();
       expected_claim = gi.evaluate(&r.unwrap());
-      gi = p.gen_uni_polynomial(r);
+      gi = p.simulate(r);
       let new_c = gi.evaluate(&0u32.into()) + gi.evaluate(&1u32.into());
       assert_eq!(expected_claim, new_c);
       assert!(gi.degree() <= lookup_degree[j]);
@@ -89,5 +106,37 @@ impl Verifier {
     let p = Prover::new(g);
     let manual_sum = p.slow_sum_g();
     manual_sum == c_1
+  }
+}
+
+impl Actor for Verifier {
+  type Context = Context<Self>;
+
+  fn started(&mut self, _ctx: &mut Context<Self>) {
+      info!("Started Verifier {}!", self.uuid);
+  }
+
+  fn stopped(&mut self, _: &mut Context<Self>) {
+      info!("Stopped Verifier {}", self.uuid);
+  }
+}
+
+impl Handler<ProofMessage<ScalarField>> for Verifier {
+  type Result = ProofResponse;
+
+  fn handle(&mut self, msg: ProofMessage<ScalarField>, ctx: &mut Context<Self>) -> Self::Result {
+    info!("Verifier {} received message {:?}", self.uuid, msg);
+
+    match msg {
+      ProofMessage::Verify(claim) => {
+        let result = Verifier::verify(self, claim);
+        ProofResponse::Verify(result)
+      },
+      ProofMessage::SlowVerify(claim) => {
+        let result = Verifier::slow_verify(self, claim);
+        ProofResponse::SlowVerify(result)
+      },
+      _ => ProofResponse::Unimplemented,
+    }
   }
 }

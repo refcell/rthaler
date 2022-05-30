@@ -1,8 +1,27 @@
 [package]
 name = "utils"
 version = "0.1.0"
+authors = ["Andreas Bigger"]
+license = "The Unlicense"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+readme = "README.md"
+description = """
+Refactored rthaler utilities.
+"""
+keywords = ["zero", "knowledge", "zk", "snark", "cryptography", "web3"]
 
 [dependencies]
+dotenv = "0.15.0"
+serde_json = "1.0"
+futures = "0.3.19"
+serde_with = "1.12.0"
+serde = { version = "1.0.126", features = ["derive"] }
+eyre = "0.6.7"
+color-eyre = "0.6.1"
+actix = "0.13.0"
+actix-rt = "2.7.0"
+tracing = "0.1.32"
+tracing-subscriber = "0.3.9"
+async-trait = "0.1.52"
+ark-bls12-381 = "0.3.0"
+ark-poly = "0.3.0"

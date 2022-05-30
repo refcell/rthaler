@@ -1,9 +1,11 @@
 [workspace]
 members = [
-  "sumcheck"
+  "dhbn254",
+  "utils",
+  "sumcheck",
+  "bin"
 ]
 
-# Binary size optimizations
 [profile.release]
 opt-level = "z"
 lto = true

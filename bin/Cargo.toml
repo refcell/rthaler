@@ -1,0 +1,15 @@
+[package]
+name = "bin"
+version = "0.1.0"
+authors = ["Andreas Bigger"]
+license = "The Unlicense"
+edition = "2021"
+readme = "README.md"
+description = """
+Binaries to demonstrate running rthaler protocols.
+"""
+keywords = ["zero", "knowledge", "zk", "snark", "cryptography", "web3"]
+
+[dependencies]
+sumcheck = { path = "../sumcheck" }
+utils = { path = "../utils" }

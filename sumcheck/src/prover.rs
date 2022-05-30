@@ -1,5 +1,3 @@
-use ark_bls12_381::Fr as ScalarField;
-
 use ark_ff::Field;
 use ark_poly::polynomial::multivariate::{SparsePolynomial, SparseTerm, Term};
 use ark_poly::polynomial::univariate::SparsePolynomial as UniSparsePolynomial;
@@ -7,14 +5,24 @@ use ark_poly::polynomial::{MVPolynomial, Polynomial};
 use ark_std::cfg_into_iter;
 use rand::Rng;
 
-use crate::common::*;
+use actix::prelude::*;
+
+use tracing::{instrument, info, error};
+
+use utils::types::*;
+use utils::messages::*;
+use uuid::Uuid;
 
 /// ## Prover
 ///
 /// The prover is responsible for generating the proof of summation over the polynomial.
 #[derive(Debug, Clone)]
 pub struct Prover {
+  /// Each prover is identifiable by a uuid.
+  pub uuid: Uuid,
+  /// The executed polynomial.
 	pub g: MultiPoly,
+  /// A collection of scalar terms.
 	pub r_vec: Vec<ScalarField>,
 }
 
@@ -22,6 +30,7 @@ impl Prover {
   /// Instantiates a new Prover instance.
 	pub fn new(g: &MultiPoly) -> Self {
 		Prover {
+      uuid: Uuid::new_v4(),
 			g: g.clone(),
 			r_vec: vec![],
 		}
@@ -82,4 +91,26 @@ impl Prover {
 			.map(|n| self.g.evaluate(&n_to_vec(n as usize, v)))
 			.sum()
 	}
+}
+
+impl Actor for Prover {
+  type Context = Context<Self>;
+
+  fn started(&mut self, _ctx: &mut Context<Self>) {
+      info!("Started Prover {}!", self.uuid);
+  }
+
+  fn stopped(&mut self, _: &mut Context<Self>) {
+      info!("Stopped Prover {}", self.uuid);
+  }
+}
+
+impl Handler<ProofMessage<ScalarField>> for Prover {
+  type Result = ProofResponse;
+
+  fn handle(&mut self, msg: ProofMessage<ScalarField>, ctx: &mut Context<Self>) -> Self::Result {
+    info!("Prover {} received message {:?}", self.uuid, msg);
+
+    ProofResponse::Unimplemented
+  }
 }
