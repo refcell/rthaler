@@ -5,6 +5,7 @@ members = [
   "sumcheck",
   "bin"
 ]
+exclude = [ "assets" ]
 
 [profile.release]
 opt-level = "z"

@@ -60,5 +60,6 @@ All code and contributions made directly to this repository are expressly unders
 ## References
 
 - [0xsage](https://medium.com/@0xsage)'s walkthrough of implementing the sum-check protocol with arkworks on [medium](https://medium.com/yearofzk/rust-guide-sum-check-protocol-18ceb8affdb2)
+- [arkworks sumcheck](https://github.com/arkworks-rs/sumcheck)
 - [Contributing Example](https://gist.github.com/briandk/3d2e8b3ec8daf5a27a62)
 - [Production Grade Logging in Rust](https://betterprogramming.pub/production-grade-logging-in-rust-applications-2c7fffd108a6)

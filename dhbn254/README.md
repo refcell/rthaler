@@ -11,3 +11,54 @@ Implements the [Diffie-Hellman-Merkle Key Exchange Protocol](https://en.wikipedi
 This curve does not satisfy the 128-bit security level anymore.
 ```
 
+#### Example
+
+**Memory DH Key Exchange**
+```rust
+use rand_core::OsRng;
+
+use dhbn254::EphemeralSecret;
+use dhbn254::PublicKey;
+
+// Alice's side
+let alice_secret = EphemeralSecret::new(&mut OsRng);
+let alice_public = PublicKey::from(&alice_secret);
+
+// Bob's side
+let bob_secret = EphemeralSecret::new(&mut OsRng);
+let bob_public = PublicKey::from(&bob_secret);
+
+// Alice again
+let alice_shared_secret = alice_secret.diffie_hellman(&bob_public);
+
+// Bob again
+let bob_shared_secret = bob_secret.diffie_hellman(&alice_public);
+
+// Each peer's computed shared secret should be the same.
+assert_eq!(<[u8; 32]>::from(alice_shared_secret), <[u8; 32]>::from(bob_shared_secret));
+```
+
+**Message-Passed Key Exchange**
+```rust
+use rand_core::OsRng;
+
+use dhbn254::EphemeralSecret;
+use dhbn254::PublicKey;
+
+// Alice's side
+let alice_secret = EphemeralSecret::new(&mut OsRng);
+let alice_public = PublicKey::from(&alice_secret);
+
+// Bob's side
+let bob_secret = EphemeralSecret::new(&mut OsRng);
+let bob_public = PublicKey::from(&bob_secret);
+
+// Alice again
+let alice_shared_secret = alice_secret.diffie_hellman(&bob_public);
+
+// Bob again
+let bob_shared_secret = bob_secret.diffie_hellman(&alice_public);
+
+// Each peer's computed shared secret should be the same.
+assert_eq!(<[u8; 32]>::from(alice_shared_secret), <[u8; 32]>::from(bob_shared_secret));
+```

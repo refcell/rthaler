@@ -1,62 +1,9 @@
 
 use std::convert::TryFrom;
-use ark_bn254::{
-    constants,
-    ristretto::{CompressedRistretto, RistrettoPoint},
-    scalar::Scalar,
-};
+use ark_ff::{PrimeField};
 use rand_core::{CryptoRng, RngCore};
 use serde::{Deserialize, Serialize};
 
-#[cfg(test)]
-use proptest::{arbitrary::Arbitrary, array, collection, prelude::*};
-
-/// A shared secret key that exists for a brief period of time.
-#[cfg_attr(test, derive(Debug))]
-pub struct EphemeralSecret(pub(crate) Scalar);
-
-impl From<[u8; 32]> for EphemeralSecret {
-    fn from(bytes: [u8; 32]) -> EphemeralSecret {
-        match Scalar::from_canonical_bytes(bytes) {
-            Some(scalar) => Self(scalar),
-            None => Self(Scalar::from_bytes_mod_order(bytes)),
-        }
-    }
-}
-
-impl From<[u8; 64]> for EphemeralSecret {
-    fn from(bytes: [u8; 64]) -> EphemeralSecret {
-        Self(Scalar::from_bytes_mod_order_wide(&bytes))
-    }
-}
-
-impl EphemeralSecret {
-    /// Generate a `EphemeralSecret` using a new scalar mod the group
-    /// order.
-    pub fn new<T>(mut rng: T) -> EphemeralSecret
-    where
-        T: RngCore + CryptoRng,
-    {
-        Self(Scalar::random(&mut rng))
-    }
-
-    /// Do Diffie-Hellman key agreement between self's secret
-    /// and a peer's public key, resulting in a `SharedSecret`.
-    pub fn diffie_hellman(&self, peer_public: &PublicKey) -> SharedSecret {
-        SharedSecret(self.0 * peer_public.0)
-    }
-}
-
-#[cfg(test)]
-impl Arbitrary for EphemeralSecret {
-    type Parameters = ();
-
-    fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
-        array::uniform32(any::<u8>()).prop_map_into().boxed()
-    }
-
-    type Strategy = BoxedStrategy<Self>;
-}
 
 /// The public key derived from an ephemeral or static secret key.
 #[derive(Clone, Copy, Debug, Eq, Deserialize, PartialEq, Serialize)]
